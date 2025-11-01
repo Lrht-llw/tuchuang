@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <link rel="icon" href="projec/templates/logo.jpg" type="image/jpg">
+</head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lr灰弹の图片上传器</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* 二次元装饰元素 */
+        .anime-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.3;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="20" cy="20" r="5" fill="%23ff6b6b"/><circle cx="80" cy="40" r="8" fill="%23ffa726"/><circle cx="40" cy="80" r="6" fill="%2366bb6a"/><rect x="60" y="10" width="10" height="10" fill="%2342a5f5"/><polygon points="10,60 20,50 30,60 20,70" fill="%239c27b0"/></svg>');
+            background-size: 200px 200px;
+        }
+        
+        .anime-character {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            width: 150px;
+            height: 200px;
+            z-index: -1;
+            opacity: 0.5;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="150" height="200" viewBox="0 0 150 200"><circle cx="75" cy="50" r="30" fill="%23ffcccb"/><path d="M 75 80 L 75 140 L 50 180 L 100 180 Z" fill="%239c27b0"/><circle cx="65" cy="45" r="5" fill="%23333"/><circle cx="85" cy="45" r="5" fill="%23333"/><path d="M 60 60 Q 75 70 90 60" stroke="%23333" stroke-width="2" fill="none"/></svg>');
+            background-repeat: no-repeat;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #c3cfe2, #ffa726, #66bb6a, #42a5f5);
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #c3cfe2 0%, #ffa726 50%, #66bb6a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #555;
+            margin-bottom: 15px;
+        }
+        
+        .upload-section {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .upload-area {
+            border: 3px dashed #c3cfe2;
+            border-radius: 15px;
+            padding: 40px 20px;
+            margin: 20px 0;
+            transition: all 0.3s;
+            background: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+        }
+        
+        .upload-area:hover {
+            background: rgba(255, 255, 255, 0.9);
+            border-color: #ffa726;
+            transform: translateY(-5px);
+        }
+        
+        .upload-area i {
+            font-size: 3rem;
+            color: #c3cfe2;
+            margin-bottom: 15px;
+        }
+        
+        .upload-text {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .upload-hint {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .upload-btn {
+            background: linear-gradient(135deg, #c3cfe2 0%, #a0dbe5 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin: 10px;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        }
+        
+        .upload-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(255, 107, 107, 0.5);
+        }
+        
+        .upload-btn i {
+            margin-right: 8px;
+        }
+        
+        .gallery-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .image-column {
+            flex: 1;
+            min-width: 300px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .image-card {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .image-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
+        }
+        
+        .image-card img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .image-info {
+            padding: 15px;
+        }
+        
+        .image-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .image-size {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .status-message {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 10px;
+            text-align: center;
+            display: none;
+        }
+        
+        .success {
+            background-color: rgba(212, 237, 218, 0.9);
+            color: #155724;
+            border: 1px solid rgba(195, 230, 203, 0.9);
+        }
+        
+        .error {
+            background-color: rgba(248, 215, 218, 0.9);
+            color: #721c24;
+            border: 1px solid rgba(245, 198, 203, 0.9);
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9rem;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .image-column {
+                min-width: 100%;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .upload-area {
+                padding: 30px 15px;
+            }
+            
+            .anime-character {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            header {
+                padding: 20px 15px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .upload-section {
+                padding: 20px 15px;
+            }
+        }
+        
+        /* 加载动画 */
+        .loader {
+            display: none;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #ff6b6b;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 2s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* 图片模态框 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.9);
+            overflow: auto;
+        }
+        
+        .modal-content {
+            margin: auto;
+            display: block;
+            max-width: 90%;
+            max-height: 90%;
+            margin-top: 2%;
+            border-radius: 10px;
+        }
+        
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .close:hover {
+            color: #bbb;
+        }
+        
+        /* 文件列表 */
+        .file-list {
+            margin-top: 20px;
+            text-align: left;
+        }
+        
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .file-name {
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .file-size {
+            color: #666;
+            margin-left: 10px;
+        }
+        
+        .file-remove {
+            color: #ff6b6b;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        
+        /* 服务器信息区域 */
+        .server-info {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="anime-bg"></div>
+    <div class="anime-character"></div>
+    
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-images"></i>Lr灰弹の图片上传器</h1>
+            <p class="subtitle">公告： 真寻酱天下第一 ~ 喵~~ </p>
+        </header>
+        
+        <div class="upload-section">
+            <h2>上传图片</h2>
+            <p>支持JPG、PNG、GIF等常见图片格式，最大支持10MB</p>
+            
+            <div class="upload-area" id="uploadArea">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <div class="upload-text">拖放图片到这里或点击选择</div>
+                <div class="upload-hint">支持一次上传多张图片</div>
+            </div>
+            
+            <input type="file" id="fileInput" multiple accept="image/*" style="display: none;">
+            
+            <div class="server-info">
+                <h3>服务器信息</h3>
+                <p>服务器状态：良好</p>
+            </div>
+            
+            <button class="upload-btn" id="uploadBtn">
+                <i class="fas fa-upload"></i> 上传图片到服务器
+            </button>
+            
+            <div id="fileList" class="file-list"></div>
+            
+            <div id="statusMessage" class="status-message"></div>
+            <div id="loader" class="loader"></div>
+        </div>
+        
+        <div class="gallery-container" id="gallery">
+            <!-- 图片将通过JavaScript动态加载 -->
+            <div class="no-images" style="text-align: center; width: 100%; padding: 50px; color: #777;">
+                还没有图片，请上传你的第一张图片吧！
+            </div>
+        </div>
+        
+        <!-- 图片模态框 -->
+        <div id="imageModal" class="modal">
+            <span class="close">&times;</span>
+            <img class="modal-content" id="modalImage">
+        </div>
+        
+        <footer>
+            <p style=" color: #777;">默默无闻 · 有点小破 · 无力修补 · 能用就行</p>
+            <a style=" color: #777;" href="http://www.lrhd.xyz" target="_blank">Lr灰弹</a>
+            <a style=" color: #777;" target="_blank">& by</a>
+            <a style=" color: #777;" href="https://icp.gov.moe/?keyword=20250892" target="_blank">萌ICP备20250892号</a>
+            <a style=" color: #777;" target="_blank">& by</a>
+            <a style=" color: #777;" href="https://github.com/Lrht-llw/tuchuang" target="_blank">目前已在GitHub开源，欢迎贡献代码！</a>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const uploadArea = document.getElementById('uploadArea');
+            const fileInput = document.getElementById('fileInput');
+            const uploadBtn = document.getElementById('uploadBtn');
+            const fileList = document.getElementById('fileList');
+            const gallery = document.getElementById('gallery');
+            const statusMessage = document.getElementById('statusMessage');
+            const loader = document.getElementById('loader');
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            const closeBtn = document.querySelector('.close');
+            
+            // 存储已选择的文件
+            let selectedFiles = [];
+            
+            // 点击上传区域触发文件选择
+            uploadArea.addEventListener('click', function() {
+                fileInput.click();
+            });
+            
+            // 拖放功能
+            uploadArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                uploadArea.style.borderColor = '#ffa726';
+                uploadArea.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
+            });
+            
+            uploadArea.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                uploadArea.style.borderColor = '#ff6b6b';
+                uploadArea.style.backgroundColor = 'rgba(255, 255, 255, 0.6)';
+            });
+            
+            uploadArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                uploadArea.style.borderColor = '#ff6b6b';
+                uploadArea.style.backgroundColor = 'rgba(255, 255, 255, 0.6)';
+                
+                const files = Array.from(e.dataTransfer.files);
+                handleFiles(files);
+            });
+            
+            // 文件选择变化
+            fileInput.addEventListener('change', function(e) {
+                const files = Array.from(e.target.files);
+                handleFiles(files);
+            });
+            
+            // 上传按钮点击
+            uploadBtn.addEventListener('click', function() {
+                if (selectedFiles.length === 0) {
+                    showStatus('请先选择要上传的图片', 'error');
+                    return;
+                }
+                
+                uploadFilesToServer(selectedFiles);
+            });
+            
+            // 关闭模态框
+            closeBtn.addEventListener('click', function() {
+                modal.style.display = 'none';
+            });
+            
+            // 点击模态框外部关闭
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+            
+            // 处理选择的文件
+            function handleFiles(files) {
+                // 过滤出图片文件
+                let imageFiles = files.filter(file => file.type.startsWith('image/'));
+                
+                if (imageFiles.length === 0) {
+                    showStatus('请选择图片文件！', 'error');
+                    return;
+                }
+                
+                // 检查文件大小（限制10MB）
+                const oversizedFiles = imageFiles.filter(file => file.size > 10 * 1024 * 1024);
+                if (oversizedFiles.length > 0) {
+                    showStatus(`部分文件超过10MB限制: ${oversizedFiles.map(f => f.name).join(', ')}`, 'error');
+                    // 只保留小于10MB的文件
+                    imageFiles = imageFiles.filter(file => file.size <= 10 * 1024 * 1024);
+                }
+                
+                // 添加到已选择的文件
+                selectedFiles = [...selectedFiles, ...imageFiles];
+                
+                // 更新文件列表显示
+                updateFileList();
+                
+                // 显示成功消息
+                showStatus(`已选择 ${imageFiles.length} 张图片`, 'success');
+            }
+            
+            // 更新文件列表显示
+            function updateFileList() {
+                fileList.innerHTML = '';
+                
+                if (selectedFiles.length === 0) {
+                    return;
+                }
+                
+                selectedFiles.forEach((file, index) => {
+                    const fileItem = document.createElement('div');
+                    fileItem.className = 'file-item';
+                    
+                    const fileName = document.createElement('div');
+                    fileName.className = 'file-name';
+                    fileName.textContent = file.name;
+                    
+                    const fileSize = document.createElement('div');
+                    fileSize.className = 'file-size';
+                    fileSize.textContent = formatFileSize(file.size);
+                    
+                    const fileRemove = document.createElement('div');
+                    fileRemove.className = 'file-remove';
+                    fileRemove.innerHTML = '<i class="fas fa-times"></i>';
+                    fileRemove.addEventListener('click', function() {
+                        selectedFiles.splice(index, 1);
+                        updateFileList();
+                    });
+                    
+                    fileItem.appendChild(fileName);
+                    fileItem.appendChild(fileSize);
+                    fileItem.appendChild(fileRemove);
+                    
+                    fileList.appendChild(fileItem);
+                });
+            }
+            
+            // 上传文件到服务器
+            function uploadFilesToServer(files) {
+                showLoader();
+                
+                const formData = new FormData();
+                
+                // 添加所有文件到FormData
+                files.forEach(file => {
+                    formData.append('images', file);
+                });
+                
+                // 发送到服务器
+                fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    hideLoader();
+                    
+                    if (data.success) {
+                        showStatus(`成功上传 ${data.uploadedCount} 张图片到服务器`, 'success');
+                        
+                        // 清空已选择的文件
+                        selectedFiles = [];
+                        updateFileList();
+                        fileInput.value = '';
+                        
+                        // 添加到画廊显示
+                        data.uploadedFiles.forEach(fileInfo => {
+                            addImageToGallery({
+                                name: fileInfo.name,
+                                size: formatFileSize(fileInfo.size),
+                                url: `projec/images/${fileInfo.name}`
+                            });
+                        });
+                    } else {
+                        showStatus(`上传失败: ${data.message}`, 'error');
+                    }
+                })
+                .catch(error => {
+                    hideLoader();
+                    console.error('上传错误:', error);
+                    showStatus('上传失败，请检查网络连接', 'error');
+                });
+            }
+            
+            // 添加图片到画廊
+            function addImageToGallery(image) {
+                // 如果没有图片，清空提示
+                if (gallery.querySelector('.no-images')) {
+                    gallery.innerHTML = '';
+                }
+                
+                // 创建三列容器（如果不存在）
+                let columns = gallery.querySelectorAll('.image-column');
+                if (columns.length === 0) {
+                    for (let i = 0; i < 3; i++) {
+                        const column = document.createElement('div');
+                        column.className = 'image-column';
+                        gallery.appendChild(column);
+                    }
+                    columns = gallery.querySelectorAll('.image-column');
+                }
+                
+                // 找到最短的列
+                let shortestColumnIndex = 0;
+                let shortestHeight = columns[0].offsetHeight;
+                
+                for (let i = 1; i < columns.length; i++) {
+                    if (columns[i].offsetHeight < shortestHeight) {
+                        shortestHeight = columns[i].offsetHeight;
+                        shortestColumnIndex = i;
+                    }
+                }
+                
+                const column = columns[shortestColumnIndex];
+                
+                // 创建图片卡片
+                const imageCard = document.createElement('div');
+                imageCard.className = 'image-card';
+                
+                const img = document.createElement('img');
+                img.src = image.url;
+                img.alt = image.name;
+                img.loading = 'lazy';
+                
+                // 点击图片打开模态框
+                img.addEventListener('click', function() {
+                    modal.style.display = 'block';
+                    modalImg.src = this.src;
+                });
+                
+                const imageInfo = document.createElement('div');
+                imageInfo.className = 'image-info';
+                
+                const imageName = document.createElement('div');
+                imageName.className = 'image-name';
+                imageName.textContent = image.name;
+                
+                const imageSize = document.createElement('div');
+                imageSize.className = 'image-size';
+                imageSize.textContent = image.size;
+                
+                imageInfo.appendChild(imageName);
+                imageInfo.appendChild(imageSize);
+                
+                imageCard.appendChild(img);
+                imageCard.appendChild(imageInfo);
+                
+                column.appendChild(imageCard);
+            }
+            
+            // 格式化文件大小
+            function formatFileSize(bytes) {
+                if (bytes === 0) return "0 B";
+                
+                const k = 1024;
+                const sizes = ["B", "KB", "MB", "GB"];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+            }
+            
+            // 显示状态消息
+            function showStatus(message, type) {
+                statusMessage.textContent = message;
+                statusMessage.className = 'status-message ' + type;
+                statusMessage.style.display = 'block';
+                
+                // 3秒后自动隐藏
+                setTimeout(() => {
+                    statusMessage.style.display = 'none';
+                }, 3000);
+            }
+            
+            // 显示加载动画
+            function showLoader() {
+                loader.style.display = 'block';
+            }
+            
+            // 隐藏加载动画
+            function hideLoader() {
+                loader.style.display = 'none';
+            }
+            
+            // 初始化示例图片
+
+            
+            // 初始化示例图片
+
+        });
+    </script>
+</body>
+</html>
