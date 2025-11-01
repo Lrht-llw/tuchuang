@@ -3,7 +3,7 @@
 
 懒的写README.md了 喵~o( =∩ω∩= )m ~ 
 
-详情可以看我b站
+详情可以看我b站   https://space.bilibili.com/1235649129
 
 或者我的个人主页 http://www.lrhd.xyz
 
