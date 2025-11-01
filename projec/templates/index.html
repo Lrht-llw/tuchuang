@@ -51,7 +51,7 @@
             text-align: center;
             margin-bottom: 30px;
             padding: 20px;
-            background: linear-gradient(135deg, #352b2d 0%, #776 100%);
+            background: linear-gradient(135deg, #80e6f3 0%, rgb(74, 147, 231) 100%);
             color: white;
             border-radius: 10px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
@@ -99,7 +99,7 @@
         }
         
         .control-btn {
-            background: linear-gradient(135deg, #6a11cb 0%, #7733 100%);
+            background: linear-gradient(135deg, #ffffff 0%, #91eeff 100%);
             color: white;
             border: none;
             padding: 10px 10px;
@@ -111,6 +111,22 @@
             align-items: center;
             justify-content: center;
         }
+
+        .upload-btn-to {
+            background: linear-gradient(135deg, #ffffff 0%, #91eeff 100%);
+            color: rgb(0, 0, 0);
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin: 10px;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        }
         
         .control-btn:hover {
             transform: translateY(-3px);
@@ -118,11 +134,11 @@
         }
         
         .refresh-btn {
-            background: linear-gradient(135deg, #646655 0%, #656861 100%);
+            background: linear-gradient(135deg, #5fec66 0%, #664df5 100%);
         }
         
         .reset-stats-btn {
-            background: linear-gradient(135deg, #777 0%, #1b1212 100%);
+            background: linear-gradient(135deg, #00e1ff 0%, #aae2f8 100%);
         }
         
         .gallery-container {
@@ -307,7 +323,7 @@
         <header>
             <h1>Lr灰弹の小破床</h1>
             <p class="subtitle">默默无闻 · 有点小破 · 无力修补 · 能用就行</p>
-        <p class="subtitle">公告：暂时还没有，就是下面那个重置按钮跟没有一样</p>
+        <p class="subtitle">公告：小更了一下</p>
             <div class="visitor-stats">
                 <div class="stat-item">
                     <span>👥 总访问次数: </span>
@@ -329,9 +345,21 @@
                 🔄 刷新图片
             </button>
 
-            <button class="control-btn reset-stats-btn" id="resetStats" style="height: 60px;">
-                🧹 重置统计
+
+
+            <button class="upload-btn-to" style="
+            height: 60px;
+            margin-left: 0px;
+            margin-right: 0px;
+            padding-left: 10px;
+            padding-right: 10px;
+            margin-bottom: 0px;
+            margin-top: 0px;
+            padding-bottom: 10px;
+            padding-top: 10px;">
+                <a style=" color: #777;" href="http://sctc.lrhd.xyz/" target="_blank">前往上传图片</a>
             </button>
+            
         </div>
             
         

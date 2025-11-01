@@ -103,7 +103,7 @@
             margin-bottom: 30px;
             text-align: center;
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: 1px solid rgb(255, 255, 255);
         }
         
         .upload-area {
@@ -141,6 +141,22 @@
         .upload-btn {
             background: linear-gradient(135deg, #c3cfe2 0%, #a0dbe5 100%);
             color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin: 10px;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .upload-btn-to {
+            background: linear-gradient(135deg, #ffffff 0%, #91eeff 100%);
+            color: rgb(0, 0, 0);
             border: none;
             padding: 12px 30px;
             font-size: 1.1rem;
@@ -415,6 +431,10 @@
             <button class="upload-btn" id="uploadBtn">
                 <i class="fas fa-upload"></i> 上传图片到服务器
             </button>
+
+            <button class="upload-btn-to" >
+                <a style=" color: #777;" href="http://tc.lrhd.xyz:3636/" target="_blank">前往图床</a>
+            </button>
             
             <div id="fileList" class="file-list"></div>
             
@@ -616,7 +636,7 @@
                             addImageToGallery({
                                 name: fileInfo.name,
                                 size: formatFileSize(fileInfo.size),
-                                url: `projec/images/${fileInfo.name}`
+                                url: `./projec/images/${fileInfo.name}`
                             });
                         });
                     } else {

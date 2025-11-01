@@ -4,7 +4,7 @@ const path = require('path');
 const fs = require('fs');
 
 const app = express();
-const PORT = 3000;
+const PORT = 3499;
 
 // 中间件设置
 app.use(express.static(path.join(__dirname, 'public')));
@@ -106,7 +106,7 @@ app.get('/images', (req, res) => {
                 return {
                     name: file,
                     size: stats.size,
-                    url: `projec/images/${file}`
+                    url: `./projec/images/${file}`
                 };
             });
 

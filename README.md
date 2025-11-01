@@ -3,7 +3,7 @@
 
 懒的写README.md了 喵~o( =∩ω∩= )m ~ 
 
-详情可以看我b站   https://space.bilibili.com/1235649129
+详情可以看我b站  https://space.bilibili.com/1235649129
 
 或者我的个人主页 http://www.lrhd.xyz
 
@@ -27,7 +27,7 @@
 
 默认端口为：3000 可再第七行修改 // const PORT = 3000;
 
-上传文件夹路径为：projec/images/   注意！！！ 修改了之后 “ projec ” 目录的 app.py 里的图片目录也得修改
+上传文件夹路径为：./projec/images/   注意！！！ 修改了之后 “ projec ” 目录的 app.py 里的图片目录也得修改
 
 projec 目录
 
