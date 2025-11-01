@@ -394,7 +394,6 @@
         document.addEventListener('DOMContentLoaded', function() {
             const gallery = document.getElementById('gallery');
             const refreshImagesBtn = document.getElementById('refreshImages');
-            const resetStatsBtn = document.getElementById('resetStats');
             const imageCountEl = document.getElementById('imageCount');
             const totalVisitsEl = document.getElementById('totalVisits');
             const uniqueVisitorsEl = document.getElementById('uniqueVisitors');
@@ -413,13 +412,6 @@
             // 刷新图片按钮点击事件
             refreshImagesBtn.addEventListener('click', function() {
                 loadImages();
-            });
-            
-            // 重置统计按钮点击事件
-            resetStatsBtn.addEventListener('click', function() {
-                if (confirm('确定要重置访问统计吗？')) {
-                    resetVisitorStats();
-                }
             });
             
             // 关闭模态框
@@ -480,19 +472,6 @@
                     .catch(error => {
                         console.error('Error fetching visitor stats:', error);
                     });
-            }
-            
-            // 重置访问统计
-            function resetVisitorStats() {
-                // 在实际应用中，这里应该调用后端API来重置统计
-                // 由于这是一个演示，我们只是重新加载页面
-                showStatus('统计已重置', 'success');
-                
-                // 模拟重置后的效果
-                setTimeout(() => {
-                    totalVisitsEl.textContent = '1';
-                    uniqueVisitorsEl.textContent = '1';
-                }, 500);
             }
             
             // 渲染图片到画廊
