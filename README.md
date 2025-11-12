@@ -36,3 +36,4 @@ projec 目录
 projec/templates/index.html 
 
  嗯.......应该没什么好改的把.... 猫脑过载
+http://tc.lrhd.xyz:3636/images/images-1762100407247-501050608.jpg
