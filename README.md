@@ -8,7 +8,7 @@
 
 详情可以看我b站  https://space.bilibili.com/1235649129
 
-或者我的个人主页 http://www.lrhd.xyz
+或者我的个人主页 http://www.lrht.cc
 
 蒜鸟蒜鸟~我还是随便写一点喵~
 
